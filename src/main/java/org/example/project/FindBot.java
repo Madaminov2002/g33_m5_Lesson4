@@ -1,20 +1,12 @@
 package org.example.project;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import lombok.SneakyThrows;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 public class FindBot extends TelegramLongPollingBot {
@@ -92,23 +84,10 @@ public class FindBot extends TelegramLongPollingBot {
                     String birthDate=message.getText();
                     Maps.USER_INFORMATION.get(message.getChatId()).setBirthDate(birthDate);
 
-                    String data= Files.readString(Path.of("C:\\Users\\User\\IdeaProjects\\g33_m5_Lesson4\\src\\main\\java\\recourse\\MOCK_DATA (3).json"));
-                    Type type = new TypeToken<List<ModelPerson>>() {}.getType();
-                    List<ModelPerson> list = new GsonBuilder().create().fromJson(data, type);
-                    List<ModelPerson> collect = list.stream()
-                            .filter(modelPerson -> modelPerson.getId() == Maps.USER_INFORMATION.get(message.getChatId()).getId() &&
-                                    modelPerson.getFirstName().equals(Maps.USER_INFORMATION.get(message.getChatId()).getFirstName()) &&
-                                    modelPerson.getLastName().equals(Maps.USER_INFORMATION.get(message.getChatId()).getLastName()) &&
-                                    modelPerson.getGender().equals(Maps.USER_INFORMATION.get(message.getChatId()).getGender()) &&
-                                    modelPerson.getPhoneNumber().equals(Maps.USER_INFORMATION.get(message.getChatId()).getPhoneNumber()) &&
-                                    modelPerson.getCity().equals(Maps.USER_INFORMATION.get(message.getChatId()).getCity()) &&
-                                    modelPerson.getBirthDate().equals(Maps.USER_INFORMATION.get(message.getChatId()).getBirthDate())).collect(Collectors.toList());
+                    String str = Manager.filterPerson(Maps.USER_INFORMATION.get(message.getChatId()));
                     if (Pattern.matches("[0-9]{2}\\-[0-9]{2}\\-[0-9]{4}",birthDate)){
-                        if (!collect.isEmpty()){
                             Maps.USER_STEPS.put(message.getChatId(),Steps.APP_FINISHED);
-                            this.execute(new SendMessage(message.getChatId().toString(), collect.get(0).toString()));
-                        }else {
-                            this.execute(new SendMessage(message.getChatId().toString(),"Data not found! /find"));
+                            this.execute(new SendMessage(message.getChatId().toString(), str+" /find"));
                         }
                     }else {
                         this.execute(new SendMessage(message.getChatId().toString(),"re-enter the information!"+ "\nexample:12-12-2003"));
@@ -116,7 +95,7 @@ public class FindBot extends TelegramLongPollingBot {
                 }
             }
         }
-    }
+
 
     @Override
     public String getBotUsername() {
