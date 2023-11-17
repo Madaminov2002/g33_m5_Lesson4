@@ -17,18 +17,20 @@ public class FindBot extends TelegramLongPollingBot {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
+        PersonDetails personDetails=new PersonDetails();
         if(update.hasMessage()){
             Message message=update.getMessage();
             if(message.hasText()){
                 String text=message.getText();
                 if (text.equals("/find")){
+
                     Maps.USER_STEPS.put(message.getChatId(),Steps.ID);
                     this.execute(new SendMessage(message.getChatId().toString(),"Enter ID: "));
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.ID) {
                     Long ID= Long.valueOf(message.getText());
-                    PersonDetails personDetails = new PersonDetails();
+
                     personDetails.setId(ID);
-                    Maps.USER_INFORMATION.put(message.getChatId(),personDetails);
+
                     if (Pattern.matches("[0-9]{1,4}",String.valueOf(ID))){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.FIRST_NAME);
                         this.execute(new SendMessage(message.getChatId().toString(),"Enter FirstName: "));
@@ -37,7 +39,7 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.FIRST_NAME) {
                     String firstName=message.getText();
-                    Maps.USER_INFORMATION.get(message.getChatId()).setFirstName(firstName);
+                    personDetails.setFirstName(firstName);
                     if (Pattern.matches("[A-Z][a-z]+",firstName)){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.LAST_NAME);
                         this.execute(new SendMessage(message.getChatId().toString(),"Enter LastName: "));
@@ -46,7 +48,7 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.LAST_NAME) {
                     String lastName=message.getText();
-                    Maps.USER_INFORMATION.get(message.getChatId()).setLastName(lastName);
+                 personDetails.setLastName(lastName);
                     if (Pattern.matches("[A-Z][a-z]+",lastName)){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.GENDER);
                         this.execute(new SendMessage(message.getChatId().toString()," Enter Gender:"));
@@ -55,7 +57,7 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.GENDER) {
                     String gender=message.getText();
-                    Maps.USER_INFORMATION.get(message.getChatId()).setGender(gender);
+                    personDetails.setGender(gender);
                     if (Pattern.matches("[A-Za-z]+",gender)){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.PHONE_NUMBER);
                         this.execute(new SendMessage(message.getChatId().toString(),"Enter PhoneNumber: ") );
@@ -64,7 +66,7 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.PHONE_NUMBER) {
                     String phoneNum=message.getText();
-                    Maps.USER_INFORMATION.get(message.getChatId()).setPhoneNumber(phoneNum);
+                    personDetails.setPhoneNumber(phoneNum);
                     if (Pattern.matches("[0-9]{10}",phoneNum)){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.CITY);
                         this.execute(new SendMessage(message.getChatId().toString(),"Enter City: "));
@@ -73,7 +75,7 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.CITY) {
                     String city=message.getText();
-                    Maps.USER_INFORMATION.get(message.getChatId()).setCity(city);
+                   personDetails.setCity(city);
                     if (Pattern.matches("[A-Z][a-z]+",city)){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.BIRTH_DATE);
                         this.execute(new SendMessage(message.getChatId().toString(),"Enter BirthDate: "));
@@ -82,9 +84,9 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.BIRTH_DATE) {
                     String birthDate=message.getText();
-                    Maps.USER_INFORMATION.get(message.getChatId()).setBirthDate(birthDate);
+                   personDetails.setBirthDate(birthDate);
 
-                    String str = Manager.filterPerson(Maps.USER_INFORMATION.get(message.getChatId()));
+                    String str = Manager.filterPerson(personDetails);
                     if (Pattern.matches("[0-9]{2}\\-[0-9]{2}\\-[0-9]{4}",birthDate)){
                             Maps.USER_STEPS.put(message.getChatId(),Steps.APP_FINISHED);
                             this.execute(new SendMessage(message.getChatId().toString(), str+" /find"));
