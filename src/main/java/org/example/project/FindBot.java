@@ -18,6 +18,7 @@ public class FindBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         PersonDetails personDetails=new PersonDetails();
+        PersonDetails person = PersonDetails.person(personDetails);
         if(update.hasMessage()){
             Message message=update.getMessage();
             if(message.hasText()){
@@ -39,7 +40,7 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.FIRST_NAME) {
                     String firstName=message.getText();
-                    personDetails.setFirstName(firstName);
+                    person.setFirstName(firstName);
                     if (Pattern.matches("[A-Z][a-z]+",firstName)){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.LAST_NAME);
                         this.execute(new SendMessage(message.getChatId().toString(),"Enter LastName: "));
@@ -48,7 +49,7 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.LAST_NAME) {
                     String lastName=message.getText();
-                 personDetails.setLastName(lastName);
+                 person.setLastName(lastName);
                     if (Pattern.matches("[A-Z][a-z]+",lastName)){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.GENDER);
                         this.execute(new SendMessage(message.getChatId().toString()," Enter Gender:"));
@@ -57,7 +58,7 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.GENDER) {
                     String gender=message.getText();
-                    personDetails.setGender(gender);
+                    person.setGender(gender);
                     if (Pattern.matches("[A-Za-z]+",gender)){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.PHONE_NUMBER);
                         this.execute(new SendMessage(message.getChatId().toString(),"Enter PhoneNumber: ") );
@@ -66,7 +67,7 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.PHONE_NUMBER) {
                     String phoneNum=message.getText();
-                    personDetails.setPhoneNumber(phoneNum);
+                    person.setPhoneNumber(phoneNum);
                     if (Pattern.matches("[0-9]{10}",phoneNum)){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.CITY);
                         this.execute(new SendMessage(message.getChatId().toString(),"Enter City: "));
@@ -75,7 +76,7 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.CITY) {
                     String city=message.getText();
-                   personDetails.setCity(city);
+                   person.setCity(city);
                     if (Pattern.matches("[A-Z][a-z]+",city)){
                         Maps.USER_STEPS.put(message.getChatId(),Steps.BIRTH_DATE);
                         this.execute(new SendMessage(message.getChatId().toString(),"Enter BirthDate: "));
@@ -84,9 +85,9 @@ public class FindBot extends TelegramLongPollingBot {
                     }
                 } else if (Maps.USER_STEPS.get(message.getChatId()) == Steps.BIRTH_DATE) {
                     String birthDate=message.getText();
-                   personDetails.setBirthDate(birthDate);
+                   person.setBirthDate(birthDate);
 
-                    String str = Manager.filterPerson(personDetails);
+                    String str = Manager.filterPerson(person);
                     if (Pattern.matches("[0-9]{2}\\-[0-9]{2}\\-[0-9]{4}",birthDate)){
                             Maps.USER_STEPS.put(message.getChatId(),Steps.APP_FINISHED);
                             this.execute(new SendMessage(message.getChatId().toString(), str+" /find"));

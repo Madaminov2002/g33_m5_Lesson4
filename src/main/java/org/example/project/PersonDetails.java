@@ -17,4 +17,10 @@ public class PersonDetails {
     private String phoneNumber;
     private String city;
     private String birthDate;
+    public static PersonDetails person(PersonDetails personDetails){
+        if (personDetails==null){
+            return new PersonDetails();
+        }
+        return personDetails;
+    }
 }
