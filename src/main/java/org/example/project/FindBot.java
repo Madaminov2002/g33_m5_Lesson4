@@ -1,6 +1,7 @@
 package org.example.project;
 
 import lombok.SneakyThrows;
+import org.example.project.bot.handler.HandlerManager;
 import org.example.project.bot.handler.MessageHandler;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -18,11 +19,7 @@ public class FindBot extends TelegramLongPollingBot {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        PersonDetails personDetails = new PersonDetails();
-        PersonDetails person = PersonDetails.person(personDetails);
-        if (update.hasMessage()) {
-            MessageHandler.handle(update.getMessage(),this);
-        }
+            HandlerManager.handle(update,this);
     }
 
         @Override

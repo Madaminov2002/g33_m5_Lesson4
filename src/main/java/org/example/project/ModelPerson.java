@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ModelPerson {
-    private long id;
+    private int id;
     private String firstName;
     private String lastName;
     private String gender;

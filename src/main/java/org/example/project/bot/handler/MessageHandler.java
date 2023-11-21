@@ -12,6 +12,8 @@ public class MessageHandler {
     public static void handle(Message message, TelegramLongPollingBot bot) {
         if (message.isCommand()) {
             CommandHandler.handle(message, bot);
+        } else if (message.hasText()) {
+            TextHandle.handle(message,bot);
         }
     }
 }

@@ -38,15 +38,15 @@ public class CommandHandler {
 
         InlineKeyboardMarkup keyboardMarkup = InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(
-                        InlineKeyboardButton.builder().text("Button-1").callbackData("btn1").build(),
-                        InlineKeyboardButton.builder().text("Button-2").callbackData("btn2").build()))
-                .keyboardRow(List.of(InlineKeyboardButton.builder().text("Button-3").callbackData("btn3").build()))
+                        InlineKeyboardButton.builder().text("With firstName").callbackData("name").build(),
+                        InlineKeyboardButton.builder().text("With lastName").callbackData("last").build()))
+                .keyboardRow(List.of(InlineKeyboardButton.builder().text("With ID").callbackData("ID").build()))
                 .keyboardRow(List.of(
-                        InlineKeyboardButton.builder().text("Button-4").callbackData("btn4").build(),
-                        InlineKeyboardButton.builder().text("Button-5").callbackData("btn5").build()))
+                        InlineKeyboardButton.builder().text("With phoneNumber").callbackData("number").build(),
+                        InlineKeyboardButton.builder().text("With city").callbackData("city").build()))
                 .build();
 
-        SendMessage sendMessage = new SendMessage(message.getChatId().toString(), "Hello");
+        SendMessage sendMessage = new SendMessage(message.getChatId().toString(), "Search");
         sendMessage.setReplyMarkup(keyboardMarkup);
         bot.execute(sendMessage);
     }
